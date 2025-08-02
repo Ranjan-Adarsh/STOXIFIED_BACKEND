@@ -1,3 +1,4 @@
+"""Main entry point for the FastAPI application."""
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from api import router
