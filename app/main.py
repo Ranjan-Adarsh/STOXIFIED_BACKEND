@@ -1,9 +1,8 @@
-"""Main entry point for the FastAPI application."""
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from api import router
+from app.routers import auth, users, news
 
-app = FastAPI()
+app = FastAPI(title="Stoxified Backend")
 
 # CORS settings (adjust for production)
 app.add_middleware(
@@ -14,4 +13,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(router)
+app.include_router(auth.router)
+app.include_router(users.router)
+app.include_router(news.router)
+
+@app.get("/")
+def root():
+    return {"message": "Welcome to Stoxified Backend API"}

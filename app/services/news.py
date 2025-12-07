@@ -1,24 +1,9 @@
-from fastapi import APIRouter
-from database import connect_db
-from typing import Optional
+from typing import Optional, List
+from app.core.database import connect_db
 
-router = APIRouter()
-
-@router.get("/news")
-def get_news(limit: int = 20, source: Optional[str] = None, list_sources: bool = False):
+def get_news_list(limit: int = 20, source: Optional[str] = None):
     conn = connect_db()
     cursor = conn.cursor()
-
-    if list_sources:
-        cursor.execute('''
-            SELECT DISTINCT source
-            FROM news_source
-            ORDER BY source
-        ''')
-        sources = [row[0] for row in cursor.fetchall()]
-        cursor.close()
-        conn.close()
-        return {"sources": sources}
 
     if source:
         cursor.execute('''
@@ -47,14 +32,13 @@ def get_news(limit: int = 20, source: Optional[str] = None, list_sources: bool =
             "url": row[2],
             "summary": row[3],
             "source": row[4],
-            "scraped_at": row[5].isoformat() if row[5] else None
+            "scraped_at": row[5]
         }
         for row in rows
     ]
-    return {"news": news_list}
+    return news_list
 
-@router.get("/news/sources")
-def get_news_sources():
+def get_news_source_list():
     conn = connect_db()
     cursor = conn.cursor()
     cursor.execute('''
