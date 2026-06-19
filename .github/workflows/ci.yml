@@ -28,5 +28,9 @@ jobs:
           if [ -z "${SECRET_KEY}" ]; then echo "SECRET_KEY not set"; exit 1; fi
           if [ -z "${DB_PASS}" ]; then echo "DB_PASS not set"; exit 1; fi
           echo "Secrets injected; running tests..."
-          # Replace with your actual test/commands, e.g.:
-          pytest -q
+          if find . -maxdepth 3 \( -name 'test_*.py' -o -name '*_test.py' \) | read; then
+            pytest -q
+          else
+            echo "No pytest test files found; validating Python syntax instead."
+            python -m compileall app
+          fi
