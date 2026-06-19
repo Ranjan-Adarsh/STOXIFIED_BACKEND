@@ -94,15 +94,16 @@ docker run -e DB_HOST="$DB_HOST" -e DB_PORT="$DB_PORT" -e DB_NAME="$DB_NAME" -e 
 
 This repo can use Docker Hub as the deployment source so you do not need Render to clone the GitHub repo.
 
-1. Create a Docker Hub repository, e.g. `yourusername/stoxified-backend`.
+1. Create a Docker Hub repository, e.g. `yourusername/stoxified_backend`.
    - Docker Hub repo names must be lowercase and can only contain letters, numbers, `-`, `_`, or `.`.
-   - Example valid names: `yourusername/stoxified-backend`, `yourusername/stoxified.backend`, `yourusername/stoxified_backend`.
+   - Example valid names: `yourusername/stoxified_backend`, `yourusername/stoxified-backend`, `yourusername/stoxified.backend`.
    - Invalid: `yourusername/STOXIFIED_BACKEND`, `yourusername/Stoxified-Backend`.
 2. In GitHub, add repository secrets:
    - `DOCKERHUB_USERNAME`
+   - `DOCKERHUB_REPOSITORY`
    - `DOCKERHUB_TOKEN`
 3. Push to `main`.
-4. The workflow will build and push the image as `yourusername/stoxified-backend:latest`.
+4. The workflow will build and push the image as `yourusername/stoxified_backend:latest` by default, or as `yourusername/${{ secrets.DOCKERHUB_REPOSITORY }}:latest`.
 5. In Render (or another host), deploy from that Docker image instead of connecting to GitHub directly.
 
 ### Free-host keep-alive
