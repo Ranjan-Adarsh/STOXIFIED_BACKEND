@@ -88,7 +88,23 @@ docker run -e DB_HOST="$DB_HOST" -e DB_PORT="$DB_PORT" -e DB_NAME="$DB_NAME" -e 
 ### GitHub Actions
 
 - `.github/workflows/ci.yml` checks secrets and validates app syntax.
-- `.github/workflows/deploy.yml` builds a Docker image and can push it to Docker Hub if `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN` are configured.
+- `.github/workflows/deploy.yml` builds a Docker image and pushes it to Docker Hub when `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN` are configured.
+
+### Docker Hub deployment
+
+This repo can use Docker Hub as the deployment source so you do not need Render to clone the GitHub repo.
+
+1. Create a Docker Hub repository, e.g. `yourusername/stoxified-backend`.
+   - Docker Hub repo names must be lowercase and can only contain letters, numbers, `-`, `_`, or `.`.
+   - Example valid names: `yourusername/stoxified-backend`, `yourusername/stoxified.backend`, `yourusername/stoxified_backend`.
+   - Invalid: `yourusername/STOXIFIED_BACKEND`, `yourusername/Stoxified-Backend`.
+2. In GitHub, add repository secrets:
+   - `DOCKERHUB_USERNAME`
+   - `DOCKERHUB_TOKEN`
+3. Push to `main`.
+4. The workflow will build and push the image as `yourusername/stoxified-backend:latest`.
+5. In Render (or another host), deploy from that Docker image instead of connecting to GitHub directly.
+
 ### Free-host keep-alive
 
 If you are using a free plan, the service may sleep after a period of inactivity. To keep the app available longer:
