@@ -58,25 +58,42 @@ jobs:
           docker build -t stoxified-backend:latest .
 
       - name: Log in to Docker Hub
-        if: ${{ secrets.DOCKERHUB_USERNAME != '' && secrets.DOCKERHUB_TOKEN != '' }}
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
         run: |
-          echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login --username "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+          if [ -z "$DOCKERHUB_USERNAME" ] || [ -z "$DOCKERHUB_TOKEN" ]; then
+            echo "Docker Hub credentials not set, skipping login and push"
+            exit 0
+          fi
+          echo "$DOCKERHUB_TOKEN" | docker login --username "$DOCKERHUB_USERNAME" --password-stdin
 
       - name: Push Docker image
-        if: ${{ secrets.DOCKERHUB_USERNAME != '' && secrets.DOCKERHUB_TOKEN != '' }}
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+          DOCKERHUB_REPOSITORY: ${{ secrets.DOCKERHUB_REPOSITORY }}
         run: |
-          DOCKERHUB_REPOSITORY="${{ secrets.DOCKERHUB_REPOSITORY }}"
+          if [ -z "$DOCKERHUB_USERNAME" ] || [ -z "$DOCKERHUB_TOKEN" ]; then
+            echo "Docker Hub credentials not set, skipping push"
+            exit 0
+          fi
           DOCKERHUB_REPOSITORY="${DOCKERHUB_REPOSITORY:-stoxified_backend}"
-          IMAGE="${{ secrets.DOCKERHUB_USERNAME }}"/${DOCKERHUB_REPOSITORY}:latest
+          IMAGE="${DOCKERHUB_USERNAME}/${DOCKERHUB_REPOSITORY}:latest"
           docker tag stoxified-backend:latest "$IMAGE"
           docker push "$IMAGE"
 
       - name: Docker image info
-        if: ${{ secrets.DOCKERHUB_USERNAME != '' && secrets.DOCKERHUB_TOKEN != '' }}
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_REPOSITORY: ${{ secrets.DOCKERHUB_REPOSITORY }}
         run: |
-          DOCKERHUB_REPOSITORY="${{ secrets.DOCKERHUB_REPOSITORY }}"
           DOCKERHUB_REPOSITORY="${DOCKERHUB_REPOSITORY:-stoxified_backend}"
-          echo "Docker image pushed: ${{ secrets.DOCKERHUB_USERNAME }}/$DOCKERHUB_REPOSITORY:latest"
+          if [ -z "$DOCKERHUB_USERNAME" ]; then
+            echo "Docker Hub credentials not configured"
+          else
+            echo "Docker image pushed: $DOCKERHUB_USERNAME/$DOCKERHUB_REPOSITORY:latest"
+          fi
 
       - name: Deployment note
         run: |
