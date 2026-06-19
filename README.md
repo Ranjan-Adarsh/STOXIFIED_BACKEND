@@ -49,9 +49,48 @@ Backend for the Stoxified application, providing news aggregation and user manag
     ACCESS_TOKEN_EXPIRE_MINUTES=30
     ```
 
-5.  **Database Setup**
+6.  **Database Setup**
     Ensure you have a PostgreSQL database named `newsdb` (or whatever you configured in `.env`) running.
     *Note: Ensure the `news` and `news_source` tables are created in your database.*
+
+## Deployment Notes
+
+This repo is configured for GitHub-connected deployment via Docker.
+
+### Recommended deployment flow
+
+1. Connect the repository to a host such as Render, Railway, or Fly.
+2. Use your Supabase PostgreSQL database as the app database.
+3. Set these environment variables in the deployment provider:
+   - `DB_HOST`
+   - `DB_PORT`
+   - `DB_NAME`
+   - `DB_USER`
+   - `DB_PASS`
+   - `SECRET_KEY`
+   - `ALGORITHM`
+   - `ACCESS_TOKEN_EXPIRE_MINUTES`
+
+### Docker
+
+Build locally:
+
+```bash
+Docker build -t stoxified-backend .
+```
+
+Run locally:
+
+```bash
+docker run -e DB_HOST="$DB_HOST" -e DB_PORT="$DB_PORT" -e DB_NAME="$DB_NAME" -e DB_USER="$DB_USER" -e DB_PASS="$DB_PASS" -e SECRET_KEY="$SECRET_KEY" -p 8000:8000 stoxified-backend
+```
+
+### GitHub Actions
+
+- `.github/workflows/ci.yml` checks secrets and validates app syntax.
+- `.github/workflows/deploy.yml` builds a Docker image and can push it to Docker Hub if `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN` are configured.
+
+## Running the Application Locally
 
 ## Running the Application
 
