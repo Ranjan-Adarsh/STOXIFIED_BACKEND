@@ -89,7 +89,17 @@ docker run -e DB_HOST="$DB_HOST" -e DB_PORT="$DB_PORT" -e DB_NAME="$DB_NAME" -e 
 
 - `.github/workflows/ci.yml` checks secrets and validates app syntax.
 - `.github/workflows/deploy.yml` builds a Docker image and can push it to Docker Hub if `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN` are configured.
+### Free-host keep-alive
 
+If you are using a free plan, the service may sleep after a period of inactivity. To keep the app available longer:
+
+1. Make sure your app exposes a health endpoint:
+   - `HEAD /` returns status `200`
+   - `GET /health` returns `{"status": "ok"}`
+2. Configure an external uptime checker such as UptimeRobot, Cron-job.org, or a similar service.
+3. Ping `https://<your-app-url>/health` every 5–10 minutes.
+
+This keeps a free deployment awake more reliably, but it is still subject to the host's free-tier limits.
 ## Running the Application Locally
 
 ## Running the Application

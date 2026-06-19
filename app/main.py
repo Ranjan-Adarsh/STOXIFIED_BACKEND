@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
 from app.routers import auth, users, news
 
@@ -17,6 +17,14 @@ app.include_router(auth.router)
 app.include_router(users.router)
 app.include_router(news.router)
 
+@app.head("/")
+def root_head():
+    return Response(status_code=200)
+
 @app.get("/")
 def root():
     return {"message": "Welcome to Stoxified Backend API"}
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
