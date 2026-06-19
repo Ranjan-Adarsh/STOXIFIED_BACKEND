@@ -4,7 +4,7 @@ from app.schemas.user import UserCreate, UserOut, Token
 from app.services.users import create_user, get_user_by_username
 from app.core.security import create_access_token, verify_password
 
-router = APIRouter(tags=["Auth"])
+router = APIRouter(prefix = "/auth",tags=["Auth"])
 
 @router.post("/signup", response_model=UserOut)
 def signup(user: UserCreate):

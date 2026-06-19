@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import Optional
 from datetime import datetime
 
@@ -9,6 +9,8 @@ class NewsItem(BaseModel):
     summary: Optional[str] = None
     source: str
     scraped_at: Optional[datetime] = None
+
+    model_config = ConfigDict(from_attributes=True)
 
 class NewsList(BaseModel):
     news: list[NewsItem]
