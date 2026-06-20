@@ -7,7 +7,11 @@ app = FastAPI(title="Stoxified Backend")
 # CORS settings (adjust for production)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://stoxified.vercel.app"],  # Change to your frontend domain in production
+    allow_origins=[
+        "https://stoxified.vercel.app",
+        "https://stoxified-git-main-stoxified.vercel.app",
+    ],
+    allow_origin_regex=r"https://stoxified-.*\.vercel\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
